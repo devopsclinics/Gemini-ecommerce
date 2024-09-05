@@ -1,0 +1,29 @@
+---
+- name: set chown user
+  set_fact:
+    mongo_user: mongod
+
+- name: configure the package management system
+  template:
+    src: mongodb-org.repo.j2
+    dest: "/etc/yum.repos.d/mongodb-org-{{ mongo_version }}.repo"
+    mode: 0644
+
+- name: install the MongoDB packages
+  yum:
+    name: mongodb-org
+    state: present
+    update_cache: yes
+
+- name: ensure the system has the checkpolicy package installed
+  yum:
+    name: checkpolicy
+    state: present
+    update_cache: yes
+
+- fail:
+    msg: "SELinux is not supported now."
+  when: ansible_selinux == "enabled"
+
+- include_tasks: configure-SELinux.yml
+  when: ansible_selinux == "enabled"

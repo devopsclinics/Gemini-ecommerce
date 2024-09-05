@@ -1,0 +1,9 @@
+# roles/mongodb/templates/mongod.conf.j2
+# mongod.conf
+
+net:
+  port: 27017
+  bindIp: 127.0.0.1  # Listen on localhost
+
+security:
+  authorization: "enabled"

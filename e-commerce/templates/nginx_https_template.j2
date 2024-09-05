@@ -1,0 +1,23 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ ssl_ip }};
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {{ ssl_ip }};
+
+    ssl_certificate {{ ssl_certificate_path }};
+    ssl_certificate_key {{ ssl_certificate_key_path }};
+    include {{ ssl_params_path }};
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

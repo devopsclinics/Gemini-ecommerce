@@ -1,0 +1,8 @@
+---
+# defaults file for e-commerce
+vars:
+  ssl_certificate_path: "/etc/ssl/certs/nginx-selfsigned.crt"
+  ssl_certificate_key_path: "/etc/ssl/private/nginx-selfsigned.key"
+  ssl_params_path: "/etc/nginx/snippets/ssl-params.conf"
+  # ip_address: "35.177.35.42" 
+  

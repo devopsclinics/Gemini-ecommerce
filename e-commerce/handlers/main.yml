@@ -1,0 +1,22 @@
+---
+# handlers file for e-commerce
+- name: Restart nginx
+  systemd:
+    name: nginx
+    state: restarted
+    
+# - name: Restart mongodb
+#   ansible.builtin.service:
+#     name: mongod
+#     state: restarted
+
+- name: Restart MongoDB
+  ansible.builtin.systemd:
+    name: mongod
+    state: restarted
+    enabled: yes
+
+# - name: Reload Nginx
+#   service:
+#     name: nginx
+#     state: reloaded

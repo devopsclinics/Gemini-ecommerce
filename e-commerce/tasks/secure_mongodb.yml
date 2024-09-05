@@ -1,0 +1,134 @@
+---
+# tasks/main.yml
+
+# - name: Set MongoDB admin user and password
+#   mongodb_user:
+#     login_host: localhost
+#     login_port: 27017
+#     name: admin
+#     password: "{{ mongodb_admin_password }}"
+#     database: eCommerce_db
+#     roles:
+#       - role: "root"
+#     state: present
+#   notify: Restart MongoDB
+
+# - name: Remove test databases
+#   command: mongo --eval "db.dropDatabase()" test
+#   become: true
+#   notify: Restart MongoDB
+
+# - name: Create a new application database and user
+#   mongodb_user:
+#     login_user: admin
+#     login_password: "{{ mongodb_admin_password }}"
+#     login_host: localhost
+#     login_port: 27017
+#     name: Lanre
+#     password: Gemini
+#     database: eCommerce_db
+#     roles:
+#       - readWrite
+#     state: present
+#   notify: Restart MongoDB
+# - name: Ensure MongoDB is running
+#   ansible.builtin.service:
+#     name: mongod
+#     state: started
+#     enabled: yes
+
+# - name: Create MongoDB admin user
+#   shell: |
+#     mongo admin --eval "db.createUser({user: '{{ mongodb_admin_user }}', pwd: '{{ mongodb_admin_password }}', roles:[{role:'root', db:'admin'}]})"
+#   args:
+#     warn: false
+#   ignore_errors: yes
+
+# - name: Remove test database
+#   shell: |
+#     mongo --eval 'db.getSiblingDB("test").dropDatabase()'
+#   args:
+#     warn: false
+#   ignore_errors: yes
+
+# - name: Enable MongoDB authentication in configuration
+#   lineinfile:
+#     path: /etc/mongod.conf
+#     regexp: '^#security:'
+#     line: 'security:'
+#     state: present
+
+# - name: Enable authorization in MongoDB configuration
+#   blockinfile:
+#     path: /etc/mongod.conf
+#     block: |
+#       security:
+#         authorization: enabled
+#       marker: ""
+#   notify: Restart MongoDB
+
+# vars:
+#   mongodb_admin_user: "admin"
+#   mongodb_admin_password: "securepassword"
+
+- name: Ensure MongoDB is running
+  ansible.builtin.service:
+    name: mongod
+    state: started
+    enabled: yes
+
+# - name: Create MongoDB admin user
+#   community.mongodb.mongodb_user: |
+#     mongo admin --eval "db.createUser({user: 'admin', pwd: 'Gemini', roles:[{role:'root', db:'admin'}]})"
+#   args:
+#     warn: false
+#   ignore_errors: no
+
+# roles/mongodb_web/tasks/create_mongo_admin_user.yml
+
+# - name: Create MongoDB admin user
+#   community.mongodb.mongodb_user:
+#     login_user: "{{ mongo_admin_user }}"
+#     login_password: "{{ mongo_admin_password }}"
+#     login_host: "{{ mongo_host }}"
+#     login_port: "{{ mongo_port }}"
+#     database: "admin"  # Authentication database
+#     name: "{{ mongo_admin_user }}"
+#     password: "{{ mongo_admin_password }}"
+#     roles:
+#       - userAdminAnyDatabase
+#       - dbAdminAnyDatabase
+#     state: present
+#   register: user_creation_result
+
+# - name: Debug MongoDB admin user creation result
+#   debug:
+#     var: user_creation_result
+
+
+# - name: Remove test database
+#   shell: |
+#     mongo --eval 'db.getSiblingDB("test").dropDatabase()'
+#   args:
+#     warn: false
+#   ignore_errors: no
+
+# - name: Enable MongoDB authentication in configuration
+#   lineinfile:
+#     path: /etc/mongod.conf
+#     regexp: '^#security:'
+#     line: 'security:'
+#     state: present
+
+# - name: Enable authorization in MongoDB configuration
+#   blockinfile:
+#     path: /etc/mongod.conf
+#     block: |
+#       security:
+#         authorization: enabled
+#       marker: ""
+#   notify: Restart MongoDB
+
+#   vars:
+#     mongodb_admin_user: "admin"
+#     mongodb_admin_password: "Gemini"

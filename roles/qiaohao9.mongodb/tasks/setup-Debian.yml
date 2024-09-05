@@ -1,0 +1,49 @@
+- name: set chown user
+  set_fact:
+    mongo_user: mongodb
+- name: install apt-transport-https
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: install gnupg
+  apt:
+    name: gnupg
+
+- name: import the public key used by the package manamegement system
+  apt_key:
+    url: "https://www.mongodb.org/static/pgp/server-{{ mongo_version }}.asc"
+    state: present
+
+- name: create the mongodb-org-{{ mongo_version }}.list in Debain {{ ansible_distribution_release }}
+  copy:
+    dest: /etc/apt/sources.list.d/mongodb-org-{{ mongo_version }}.list
+    content: deb https://mirrors.tuna.tsinghua.edu.cn/mongodb/apt/debian {{ ansible_distribution_release }}/mongodb-org/{{ mongo_version }} main
+    mode: '0644'
+
+- name: install the MongoDB packages
+  apt:
+    name: mongodb-org
+
+---
+- name: Install MongoDB
+  apt:
+    name: mongodb
+    state: present
+    update_cache: yes
+
+- name: Ensure MongoDB is started and enabled
+  systemd:
+    name: mongod
+    state: started
+    enabled: yes
+
+- name: Configure MongoDB to enable authentication
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+  notify: Restart MongoDB
+
+- name: Install pymongo package
+  pip:
+    name: pymongo

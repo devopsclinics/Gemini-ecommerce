@@ -1,0 +1,10 @@
+---
+- name: E-commerce Playbook
+  hosts: gemini-node2
+  become: yes
+
+  roles:
+    - e-commerce
+    #- qiaohao9.mongodb
+    #- install_mongodb
+    

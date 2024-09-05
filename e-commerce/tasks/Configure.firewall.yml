@@ -1,0 +1,23 @@
+# - name: Enable UFW firewall
+#   ufw:
+#     state: enabled
+#   become: yes
+
+# - name: Allow necessary ports for Nginx
+#   ufw:
+#     rule: allow
+#     name: 'Nginx Full'
+#   become: yes
+
+# - name: Allow SSH access
+#   ufw:
+#     rule: allow
+#     name: 'OpenSSH'
+#   become: yes
+
+# - name: Deny all other incoming traffic
+#   ufw:
+#     rule: deny
+#     from: any
+#     to: any
+#   become: yes

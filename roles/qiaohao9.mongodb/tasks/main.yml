@@ -1,0 +1,38 @@
+---
+
+- name: print the system info
+  debug:
+    msg: "distribution: {{ ansible_distribution }} release: {{ ansible_distribution_release }} version: {{ ansible_distribution_version }}"
+
+# - name: Incldue OS-specific variables
+#   include_vars: "{{ ansible_distribution }}.yml"
+
+# Setup/install tasks
+- include_tasks: setup-Debian.yml
+  when: ansible_distribution == 'Debian'
+- include_tasks: install_mongodb.yaml
+- include_tasks: install_pymongo.yaml  
+- include_tasks: secure_mongodb.yaml
+- include_tasks: setup-Debian.yml
+
+
+- name: Create the directory for MongoDB
+  ansible.builtin.file:
+    path: "{{ mongo_db_path }}"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: "0755"
+
+# - name: copy the configuration to the server
+#   template:
+#     src: mongod.conf.j2
+#     dest: /etc/mongod.conf
+#     mode: 0644
+#   notify: restart mongodb
+
+# - name: ensure MongoDB is running and enabled on boot
+#   service:
+#     name: mongod
+#     state: started
+#     enabled: yes

@@ -1,0 +1,38 @@
+# - name: Ensure MongoDB is bound only to localhost
+#   lineinfile:
+#     path: /etc/mongod.conf
+#     regexp: '^bindIp:'
+#     line: 'bindIp: 127.0.0.1'
+#     state: present
+#   notify: restart mongod
+#   become: yes
+
+# - name: Create MongoDB admin user with strong password
+#   mongodb_user:
+#     name: admin
+#     password: "{{ mongodb_admin_password }}"
+#     database: admin
+#     roles: ['root']
+#   become: yes
+
+# - name: Remove remote admin access
+#   lineinfile:
+#     path: /etc/mongod.conf
+#     regexp: '^#security:'
+#     line: 'security:'
+#   notify: restart mongod
+#   become: yes
+
+# - name: Enable MongoDB authorization
+#   lineinfile:
+#     path: /etc/mongod.conf
+#     regexp: '^#authorization:'
+#     line: 'authorization: enabled'
+#   notify: restart mongod
+#   become: yes
+
+# - name: Restart MongoDB to apply changes
+#   systemd:
+#     name: mongod
+#     state: restarted
+#   become: yes

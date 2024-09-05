@@ -1,0 +1,40 @@
+---
+# vars file for e-commerce
+
+# mongodb_admin_user: "admin"
+# securepassword: "Gemini"
+# basic_auth_password: "Gemini" 
+
+
+# vars:
+#     ssl_certificate_path: "/etc/ssl/certs/nginx-selfsigned.crt"
+#     ssl_certificate_key_path: "/etc/ssl/private/nginx-selfsigned.key"
+#     ssl_params_path: "/etc/nginx/snippets/ssl-params.conf"
+#     mongo_admin_user: "admin"
+#     mongo_admin_password: "Gemini"
+#     mongo_host: "localhost"
+#     mongo_port: 27017
+#     mongo_db_name: "ecommerce"
+
+    # roles/mongodb_web/vars/main.yml
+
+# MongoDB variables
+mongo_admin_user: "admin"
+mongo_admin_password: "Gemini"
+mongo_host: "localhost"
+mongo_port: 27017
+mongo_db_name: "ecommerce"
+
+# Web server variables (Node.js app)
+app_directory: "/var/www/html/ecommerce"
+app_entry_point: "app.js"
+app_user: "www-data"
+
+mongo_host: "mongodb_host"
+mongo_port: 27017
+mongo_admin_user: "admin"
+mongo_admin_password: "Gemini"
+mongo_target_user: "admin"
+mongo_target_password: "Gemini"
+mongo_db_name: "ecommerce"  # Define the database name here
+

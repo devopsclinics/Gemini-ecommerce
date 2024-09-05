@@ -1,0 +1,16 @@
+---
+- name: Ensure group "gemini" exists
+  ansible.builtin.group:
+    name: gemini
+    state: present
+
+- name: Add several users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: present
+    groups: "gemini"
+  loop:
+     - Lanre
+     - Habeeb
+     - Yetunde
+     - Bola

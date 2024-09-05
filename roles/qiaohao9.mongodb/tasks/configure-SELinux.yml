@@ -1,0 +1,65 @@
+---
+- name: create temporary SELinux complie and load directory
+  tempfile:
+    state: directory
+    suffix: .selinux
+  register: tempDir
+
+- name: print the temporary directory
+  debug:
+    msg: "{{ tempDir.path }}"
+
+# Permit Access to cgroup
+- name: copy the custom policy file mongodb_cgroup_memory.te
+  template:
+    src: mongodb_cgroup_memory.te
+    dest: "{{ tempDir.path }}/mongodb_cgroup_memory.te"
+
+- name: compile and load the custom policy module
+  shell:
+    cmd: |
+      checkmodule -M -m -o mongodb_cgroup_memory.mod mongodb_cgroup_memory.te
+      semodule_package -o mongodb_cgroup_memory.pp -m mongodb_cgroup_memory.mod
+      semodule -i mongodb_cgroup_memory.pp
+    chdir: "{{ tempDir.path }}"
+
+# Permit Access to netstat for FTDC
+- name: copy the custom policy file mongodb_proc_net.te
+  template:
+    src: mongodb_proc_net.te
+    dest: "{{ tempDir.path }}/mongodb_proc_net.te"
+
+- name: compile and load the custom policy module
+  shell:
+    cmd: |
+      checkmodule -M -m -o mongodb_proc_net.mod mongodb_proc_net.te
+      semodule_package -o mongodb_proc_net.pp -m mongodb_proc_net.mod
+      semodule -i mongodb_proc_net.pp
+    chdir: "{{ tempDir.path }}"
+
+- name: copy the custom policy file mongodb_sysctl_net.te
+  template:
+    src: mongodb_sysctl_net.te
+    dest: "{{ tempDir.path }}/mongodb_sysctl_net.te"
+
+- name: compile and load the custom policy module
+  shell:
+    cmd: |
+      checkmodule -M -m -o mongodb_sysctl_net.mod mongodb_sysctl_net.te
+      semodule_package -o mongodb_sysctl_net.pp -m mongodb_sysctl_net.mod
+      semodule -i mongodb_sysctl_net.pp
+    chdir: "{{ tempDir.path }}"
+
+# Using a Custom MongoDB Directory Path
+- name: update the SELinux policy for custom MongoDB path
+  shell: |
+    semanage fcontext -a -t mongod_var_lib_t '{{ mongo_db_path }}.*'
+    semanage fcontext -a -t mongod_log_t '{{ mongo_log_path }}.*'
+    semanage fcontext -a -t mongod_var_run_t '{{ mongo_pid_path }}.*>'
+    chcon -Rv -u system_u -t mongod_log_t '{{ mongo_db_path }}'
+    chcon -Rv -u system_u -t mongod_var_run_t  '{{ mongo_log_path }}'
+    chcon -Rv -u system_u -t mongod_var_run_t '{{ mongo_pid_path }}'
+    restorecon -R -v '{{ mongo_db_path }}'
+    restorecon -R -v '{{ mongo_log_path }}'
+    restorecon -R -v '{{ mongo_pid_path }}'
+    semanage port -a -t mongod_port_t -p tcp {{ mongo_port }}

@@ -1,0 +1,10 @@
+---
+- name: Install pymongo package from APT
+  apt:
+    name: python3-pymongo
+    state: present
+
+# - name: Install pymongo dependency
+#   pip:
+#     name: pymongo
+#     state: present

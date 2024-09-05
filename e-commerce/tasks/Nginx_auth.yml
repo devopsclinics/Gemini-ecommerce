@@ -1,0 +1,38 @@
+---
+- name: Install apache2-utils for htpasswd
+  apt:
+    name: apache2-utils
+    state: present
+  become: yes
+
+- name: Install passlib using apt
+  apt:
+    name: python3-passlib
+    state: present
+ 
+
+# - name: Install passlib Python library
+#   pip:
+#     name: passlib
+#     state: present
+#     executable: pip3
+
+- name: Set up basic auth for Nginx
+  htpasswd:
+    path: /etc/nginx/.htpasswd
+    name: admin
+    password: "{{ basic_auth_password }}"
+  become: yes
+
+- name: Configure Nginx for Basic Authentication
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: restart nginx
+  become: yes
+
+- name: Restart Nginx
+  systemd:
+    name: nginx
+    state: restarted
+  become: yes

@@ -1,0 +1,148 @@
+---
+# - name: Create MongoDB admin user
+#   shell: mongo admin --eval "db.createUser({user: '{{ mongodb_admin_user }}', pwd: '{{ mongodb_admin_password }}', roles:[{role:'root', db:'admin'}]})"
+#   ignore_errors: yes
+
+# - name: Remove test database
+#   shell: mongo --eval 'db.getSiblingDB("test").dropDatabase()'
+#   ignore_errors: yes
+
+# - name: Enable MongoDB authentication in configuration
+#   lineinfile:
+#     path: /etc/mongod.conf
+#     regexp: '^#security:'
+#     line: 'security:'
+#     state: present
+
+# - name: Enable authorization in MongoDB configuration
+#   blockinfile:
+#     path: /etc/mongod.conf
+#     block: |
+#       security:
+#         authorization: enabled
+#       marker: ""
+#   notify: Restart MongoDB
+
+# ---
+# - name: Create MongoDB admin user
+#   shell: >
+#     mongo admin --eval "db.createUser({
+#       user: '{{ mongodb_admin_user }}',
+#       pwd: '{{ mongodb_admin_password }}',
+#       roles: [{role: 'root', db: 'admin'}]
+#     })"
+#   ignore_errors: yes
+
+# - name: Remove test database
+#   shell: mongo --eval 'db.getSiblingDB("test").dropDatabase()'
+#   ignore_errors: yes
+
+# - name: Enable MongoDB authentication in configuration
+#   lineinfile:
+#     path: /etc/mongod.conf
+#     regexp: '^#security:'
+#     line: 'security:'
+#     state: present
+
+# - name: Enable authorization in MongoDB configuration
+#   blockinfile:
+#     path: /etc/mongod.conf
+#     block: |
+#       security:
+#         authorization: enabled
+#       marker: ""
+#   notify: Restart MongoDB
+
+  # vars:
+  # # mongodb_admin_user: "admin"
+  # mongodb_admin_password: "securepassword"
+    # mongodb_admin_user: "admin"
+    # mongodb_admin_password: "Gemini"
+
+# - name: ensure MongoDB is running and enabled on boot
+#   service:
+#     name: mongod
+#     state: started
+#     enabled: yes
+
+- name: Wait for MongoDB to be available
+  uri:
+    url: http://localhost:27017
+    method: GET
+    return_content: yes
+  register: mongo_check
+  until: mongo_check.status == 200
+  retries: 5
+  delay: 10    
+
+# Secure the MongoDB Server
+# Step 1: Enable MongoDB authentication
+- name: Enable MongoDB authentication
+  lineinfile:
+    path: /etc/mongod.conf
+    regexp: '^#security:'
+    line: 'security:'
+    state: present
+  notify: Restart MongoDB
+
+- name: Add authorization to MongoDB security configuration
+  lineinfile:
+    path: /etc/mongod.conf
+    regexp: 'authorization: "disabled"'
+    line: '  authorization: "enabled"'
+    insertafter: '^security:'
+  notify: Restart MongoDB
+
+# Step 2: Set Admin Password
+- name: Create MongoDB admin user
+  community.mongodb.mongodb_user:
+    name: "{{ mongodb_admin_user }}"
+    password: "{{ mongodb_admin_password }}"
+    database: admin
+    roles: ['root']
+    state: present
+    login_host: localhost
+  no_log: false
+  become: true
+
+# Step 3: Remove test databases
+- name: Remove MongoDB test database
+  shell: |
+    mongo --eval "db.getSiblingDB('test').dropDatabase()"
+  become: true
+
+  # Create a specific database for the platform
+- name: Create MongoDB database
+  shell: |
+    mongo --eval 'db.getSiblingDB("{{ mongodb_platform_database }}").runCommand({ping: 1})'
+  become: yes
+
+- name: Create MongoDB user
+  shell: |
+    mongo --eval 'db.getSiblingDB("{{ mongodb_platform_database }}").createUser({
+          user: "{{ mongodb_platform_user }}",
+          pwd: "{{ mongodb_platform_password }}",
+          roles: [{role: "readWrite", db: "{{ mongodb_platform_database }}"}]
+        })'
+  become: yes
+  no_log: true
+# - name: Create MongoDB database
+#   community.mongodb.mongodb_database:
+#     name: "{{ mongodb_platform_database }}"
+#     state: present
+#     login_user: "{{ mongodb_admin_user }}"
+#     login_password: "{{ mongodb_admin_password }}"
+#     login_host: localhost
+
+# # Create a user for the platform database
+# - name: Create MongoDB user for the platform
+#   community.mongodb.mongodb_user:
+#     name: "{{ mongodb_platform_user }}"
+#     password: "{{ mongodb_platform_password }}"
+#     database: "{{ mongodb_platform_database }}"
+#     roles: ['readWrite']
+#     login_user: "{{ mongodb_admin_user }}"
+#     login_password: "{{ mongodb_admin_password }}"
+#     login_host: localhost
+#   no_log: true
+#   become: true

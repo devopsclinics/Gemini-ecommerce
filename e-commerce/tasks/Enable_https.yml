@@ -1,0 +1,104 @@
+# ---
+# - name: Create directory for SSL certificates
+#   file:
+#     path: /etc/ssl/private
+#     state: directory
+#     mode: '0755'
+
+# - name: Generate self-signed SSL certificate and key
+#   community.general.openssl_certificate:
+#     path: "{{ ssl_certificate_path }}"
+#     privatekey_path: "{{ ssl_certificate_key_path }}"
+#     common_name: "{{ ssl_ip }}"
+#     subject:
+#       countryName: "UK"
+#       stateOrProvinceName: "South_Yorkshire"
+#       localityName: "Sheffield"
+#       organizationName: "GeminiUK"
+#     provider: selfsigned
+#     privatekey_bits: 2048
+
+# - name: Generate strong Diffie-Hellman group
+#   command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+#   args:
+#     creates: /etc/ssl/certs/dhparam.pem
+
+# - name: Create SSL configuration snippet for Nginx
+#   copy:
+#     dest: "{{ ssl_params_path }}"
+#     content: |
+#       ssl_protocols TLSv1.2 TLSv1.3;
+#       ssl_prefer_server_ciphers on;
+#       ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+#       ssl_dhparam /etc/ssl/certs/dhparam.pem;
+#       ssl_session_timeout 1d;
+#       ssl_session_cache shared:SSL:10m;
+#       ssl_session_tickets off;
+#       ssl_stapling on;
+#       ssl_stapling_verify on;
+#       add_header Strict-Transport-Security "max-age=15768000; includeSubDomains" always;
+#       add_header X-Content-Type-Options nosniff;
+#       add_header X-Frame-Options DENY;
+
+# - name: Configure Nginx to use self-signed SSL certificate
+#   template:
+#     src: nginx_https_template.j2
+#     dest: /etc/nginx/sites-available/default
+#     notify:
+#       - Reload Nginx
+
+#   handlers:
+#     - name: Reload Nginx
+#       service:
+#         name: nginx
+#         state: reloaded
+
+---
+- name: Create directory for SSL certificates
+  file:
+    path: /etc/ssl/private
+    state: directory
+    mode: '0755'
+
+- name: Generate self-signed SSL certificate and key
+  command: >
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048
+    -keyout {{ ssl_certificate_key_path }} -out {{ ssl_certificate_path }}
+    -subj "/C=UK/ST=South_Yorkshire/L=Sheffield/O=GeminiUK/CN={{ ssl_ip }}"
+  args:
+    creates: "{{ ssl_certificate_path }}"
+
+- name: Generate strong Diffie-Hellman group
+  command:
+    cmd: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+    creates: /etc/ssl/certs/dhparam.pem
+
+- name: Create SSL configuration snippet for Nginx
+  copy:
+    dest: "{{ ssl_params_path }}"
+    content: |
+      ssl_protocols TLSv1.2 TLSv1.3;
+      ssl_prefer_server_ciphers on;
+      ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+      ssl_dhparam /etc/ssl/certs/dhparam.pem;
+      ssl_session_timeout 1d;
+      ssl_session_cache shared:SSL:10m;
+      ssl_session_tickets off;
+      ssl_stapling on;
+      ssl_stapling_verify on;
+      add_header Strict-Transport-Security "max-age=15768000; includeSubDomains" always;
+      add_header X-Content-Type-Options nosniff;
+      add_header X-Frame-Options DENY;
+
+- name: Configure Nginx to use self-signed SSL certificate
+  template:
+    src: nginx_https_template.j2
+    dest: /etc/nginx/sites-available/default
+    notify:
+      - Reload Nginx
+
+  # handlers:
+  #   - name: Reload Nginx
+  #     service:
+  #       name: nginx
+  #       state: reloaded

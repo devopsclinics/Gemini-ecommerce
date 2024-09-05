@@ -1,0 +1,34 @@
+---
+# roles/mongodb/tasks/create_db.yml
+
+- name: Ensure pymongo is installed
+  ansible.builtin.pip:
+    name: pymongo
+
+- name: Create MongoDB admin user
+  community.mongodb.mongodb_user:
+    login_user: "{{ mongo_admin_user }}"
+    login_password: "{{ mongo_admin_password }}"
+    login_host: "{{ mongo_host }}"
+    login_port: "{{ mongo_port }}"
+    login_database: "admin"
+    name: "{{ mongo_target_user }}"
+    password: "{{ mongo_target_password }}"
+    roles:
+      - userAdminAnyDatabase
+      - dbAdminAnyDatabase
+    state: present
+
+- name: Create MongoDB database
+  community.mongodb.mongodb_shell:
+    login_user: "{{ mongo_admin_user }}"
+    login_password: "{{ mongo_admin_password }}"
+    login_host: "{{ mongo_host }}"
+    login_port: "{{ mongo_port }}"
+    db: "{{ mongo_db_name }}"
+    eval: "db.createCollection('dummy_collection')"  # MongoDB requires a collection to create a database
+  register: db_creation_result
+
+- name: Debug MongoDB database creation result
+  ansible.builtin.debug:
+    var: db_creation_result

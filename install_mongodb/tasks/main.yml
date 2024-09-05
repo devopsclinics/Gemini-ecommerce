@@ -1,0 +1,56 @@
+---
+# tasks file for install_mongodb
+- name: Install prerequisites
+  apt:
+    name:
+      - gnupg
+      - curl
+    state: present
+  become: yes
+
+- name: Configuring repository - Ubuntu
+  block:
+    - name: Downloading the mongodb key and adding to the keyring - Ubuntu
+      ansible.builtin.apt_key:
+        url: https://www.mongodb.org/static/pgp/server-7.0.asc
+        keyring: /usr/share/keyrings/mongodb-server-7.0.gpg
+        state: present
+
+    - name: Creating repo and adding to the source list - Ubuntu
+      ansible.builtin.apt_repository:
+        repo: "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse"
+        state: present
+        filename: /etc/apt/sources.list.d/mongodb-org-7.0.list
+      when: ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Install MongoDB packages
+  apt:
+    name:
+      - mongodb-org
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+  become: yes
+
+- name: Start and enable MongoDB
+  systemd:
+    name: mongod
+    state: started
+    enabled: yes
+  become: yes
+
+# Setup/install tasks
+- include_tasks: secure_mongodb.yml
+
+# - name: Configure MongoDB to enable authentication
+#   template:
+#     src: mongod.conf.j2
+#     dest: /etc/mongod.conf
+#   notify: Restart MongoDB
+#   become: yes
+
+
+

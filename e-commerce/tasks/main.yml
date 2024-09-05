@@ -1,0 +1,10 @@
+---
+# tasks file for e-commerce
+- name: Create new users tasks
+  # include_tasks: users.yml
+  # include_tasks: Install_nginx.yml
+  # include_tasks: Install_mongodb.yml
+  # include_tasks: Nginx_auth.yml
+  #include_tasks: Enable_https.yml
+  include_tasks: database.yml
+  #include_tasks: secure_mongodb.yml

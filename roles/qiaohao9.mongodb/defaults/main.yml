@@ -1,0 +1,15 @@
+mongo_version: 7.0
+
+mongo_user: mongod
+
+mongo_ip: 0.0.0.0
+mongo_port: 27017
+
+mongo_db_path: /var/lib/mongodb
+mongo_log_path: /dev/null
+
+mongodb_admin_user: "admin"
+mongodb_admin_password: "Gemini"
+mongodb_platform_database: "ecommerce_db"
+mongodb_platform_user: "Lanre"
+mongodb_platform_password: "Gemini"

@@ -1,0 +1,6 @@
+---
+# vars file for e-commerce
+
+mongodb_admin_user: "admin"
+mongodb_admin_password: "Gemini"
+

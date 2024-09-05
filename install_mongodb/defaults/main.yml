@@ -1,0 +1,9 @@
+---
+# defaults file for install_mongodb
+# roles/mongodb/defaults/main.yml
+mongodb_admin_user: "admin"
+mongodb_admin_password: "admin_gemini"
+mongodb_platform_database: "platform_db"
+mongodb_platform_user: "platform_lanre"
+mongodb_platform_password: "platform_gemini"
+mongodb_version: "7.0"

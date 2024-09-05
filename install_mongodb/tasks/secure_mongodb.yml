@@ -1,0 +1,22 @@
+---
+- name: Creating MongoDB user admin
+  community.mongodb.mongodb_user:
+    database: admin
+    name: admin
+    password: admin_gemini
+    roles: root
+    state: present
+
+- name: Drop MongoDB test database
+  ansible.builtin.command: >
+    mongosh admin --eval 'db = db.getSiblingDB("test"); db.dropDatabase();'
+  become: yes
+
+- name: Set MongoDB admin password in the configuration file
+  lineinfile:
+    path: /etc/mongod.conf
+    regexp: '^#?security:'
+    line: |
+      security:
+        authorization: "enabled"
+  notify: Restart MongoDB

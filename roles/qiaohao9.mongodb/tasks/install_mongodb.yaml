@@ -1,0 +1,23 @@
+---
+- name: Install MongoDB
+  apt:
+    name: mongodb
+    state: present
+    update_cache: yes
+
+
+- name: Ensure MongoDB is started and enabled
+  systemd:
+    name: mongod
+    state: started
+    enabled: yes
+
+- name: Configure MongoDB to enable authentication
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+  notify: Restart MongoDB
+
+- name: Install pymongo package
+  pip:
+    name: pymongo
