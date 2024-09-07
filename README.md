@@ -58,6 +58,18 @@ Start MongoDB: mongod
 Run your server: node app.js
 Open http://localhost:3000/ in your browser.
 
+Step 7: Enhance Security with Ansible
+![image](https://github.com/user-attachments/assets/3d12d964-b631-4089-be20-68c7c5dff00e)
+Configure Firewall
+
+Use Ansible to configure the firewall to allow only necessary ports within the security role
+![image](https://github.com/user-attachments/assets/a4bebb52-3e09-4ac3-97eb-cea8241f5065)
+
+Enable HTTPS
+Install and configure SSL certificates to enable HTTPS using Ansible.
+![image](https://github.com/user-attachments/assets/31eca012-afb3-4fb4-9950-4eb1af7643db)
+
+
 
 
 
