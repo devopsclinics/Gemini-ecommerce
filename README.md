@@ -38,49 +38,15 @@ Use JavaScript and Node.js to handle adding products to the cart and displaying 
 User Authentication
 Implement user authentication using Node.js and MongoDB.
 FRONTEND
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eCommerce</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <h1>Products</h1>
-    <div id="products"></div>
-    
-    <h2>Your Cart</h2>
-    <div id="cart"></div>
-
-    <script src="js/cart.js"></script>
-</body>
-</html>
-
+![image](https://github.com/user-attachments/assets/21977329-a4fb-4c7a-95de-bfea187afa69)
 
 STYLES>CSS
-body {
-    font-family: Arial, sans-serif;
-}
+![image](https://github.com/user-attachments/assets/2042bed1-fb47-4aae-8f08-fb8894734e90)
+![image](https://github.com/user-attachments/assets/95587c9f-1e7c-4ae5-8aa9-8a7eb79d43a1)
+![image](https://github.com/user-attachments/assets/a425ef0e-14b2-433f-a41d-e0f994efc395)
 
-#products {
-    display: flex;
-    flex-wrap: wrap;
-}
 
-.product {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-    width: 200px;
-    text-align: center;
-}
 
-.cart-item {
-    margin: 10px 0;
-}
 Create All Script Acoording to the structure thne,
 -Create a .env file in the root of your project:
 ![image](https://github.com/user-attachments/assets/7cfb4e14-efed-46dd-b560-172ca37a1593)
