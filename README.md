@@ -28,24 +28,8 @@ To create a simple e-commerce website with product display, shopping cart functi
 Frontend: HTML, CSS, and JavaScript will handle product display and cart interactions.
 Backend: Node.js will serve API endpoints and manage authentication and cart operations. MongoDB will handle user data and cart storage.
 
-ecommerce-app/
-│
-├── models/
-│   ├── User.js
-│   ├── Product.js
-│
-├── public/
-│   │── styles.css
-│   |── cart.js
-│   └── index.html
-│
-├── routes/
-│   ├── auth.js
-│   ├── cart.js
-│   ├── products.js
-│
-├── app.js
-└── package.json
+![image](https://github.com/user-attachments/assets/ecb98bd9-c913-435a-a542-670412c1ed22)
+
 
 Create a Product Listing Page
 Design an HTML page to display products.
@@ -54,6 +38,8 @@ Use JavaScript and Node.js to handle adding products to the cart and displaying 
 User Authentication
 Implement user authentication using Node.js and MongoDB.
 FRONTEND
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,6 +58,7 @@ FRONTEND
     <script src="js/cart.js"></script>
 </body>
 </html>
+
 
 STYLES>CSS
 body {
