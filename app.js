@@ -31,9 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(auth({
     authRequired: false,  // Optional: set to true to require authentication for all routes
     auth0Logout: true,
-    baseURL: 'http://localhost:3000',  // Replace with your app's URL if different
+    baseURL: process.env.BASE_URL,  // Replace with your app's URL if different
     clientID: process.env.AUTH0_CLIENT_ID,
-    issuerBaseURL: process.env.AUTH0_DOMAIN,
+    issuerBaseURL: process.env.ISSUER_BASE_URL,
     secret: process.env.AUTH0_CLIENT_SECRET,
 }));
 
